@@ -6,6 +6,7 @@ from datetime import datetime
 choices = ['Date', 'Category', 'Cost']
 plot = ['Bar with budget', 'Pie','Bar without budget']
 spend_display_option = ['Day', 'Month']
+spend_categories = ['Food','Groceries','Utilities','Transport','Shopping','Miscellaneous']
 spend_estimate_option = ['Next day', 'Next month']
 update_options = {
     'continue': 'Continue',
