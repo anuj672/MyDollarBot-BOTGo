@@ -6,7 +6,7 @@ on:
     push:
       branches:
         - main
-        - dev  # Add the second branch you want to monitor
+        - development  # Add the second branch you want to monitor
 
 jobs:
   test:
