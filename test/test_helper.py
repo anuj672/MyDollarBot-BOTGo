@@ -1,5 +1,6 @@
 from code import helper
 from code.helper import isCategoryBudgetByCategoryAvailable, throw_exception
+from code.helper import validate_transaction_limit
 from telebot import types
 from unittest.mock import patch
 import logging
@@ -420,3 +421,28 @@ def create_message(text):
     params = {'messagebody': text}
     chat = types.User(11, False, 'test')
     return types.Message(1, None, None, chat, 'text', params, "")
+
+
+@patch('code.helper.isMaxTransactionLimitAvailable', return_value=True)
+@patch('code.helper.getMaxTransactionLimit', return_value=100.0)
+def test_validate_transaction_limit_within_limit(mock_is_limit_available, mock_get_max_limit):
+    # Simulate a chat_id and transaction amount within the limit
+    chat_id = 123
+    amount_value = 50.0
+    bot = Mock()
+    # Call the validate_transaction_limit function
+    validate_transaction_limit(chat_id, amount_value, bot)
+    # Assert that no warning message is sent
+    bot.send_message.assert_not_called()
+
+@patch('code.helper.isMaxTransactionLimitAvailable', return_value=True)
+@patch('code.helper.getMaxTransactionLimit', return_value=100.0)
+def test_validate_transaction_limit_exceeds_limit(mock_is_limit_available, mock_get_max_limit):
+    # Simulate a chat_id and transaction amount exceeding the limit
+    chat_id = 123
+    amount_value = 150.0
+    bot = Mock()
+    # Call the validate_transaction_limit function
+    validate_transaction_limit(chat_id, amount_value, bot)
+    # Assert that a warning message is sent
+    bot.send_message.assert_called_once_with(chat_id, 'Warning! You went over your transaction spend limit')
