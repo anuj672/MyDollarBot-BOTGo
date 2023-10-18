@@ -2,7 +2,7 @@ name: Python Test
 
 on:
     schedule:
-      - cron: '0 4,16 * * *'  # Run at 12 AM ET and 12 PM ET
+      - cron: '*/15 * * * *'  # Run every 15 minutes
     push:
       branches:
         - main
