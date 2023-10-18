@@ -30,3 +30,12 @@ jobs:
       - name: Run Black
         run: black *.py
 
+      - name: Run Pylint
+        run: pylint --disable=R,C,E1120 *.py
+        continue-on-error: true  # Allows the workflow to continue even if pylint returns non-zero
+
+      - name: Display Pylint results
+        run: cat pylint.log         
+        
+        
+

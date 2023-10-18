@@ -7,3 +7,4 @@ coverage
 pytest-mock
 python-telegram-bot
 black
+pylint
