@@ -4,9 +4,10 @@ import os
 from datetime import datetime
 
 choices = ['Date', 'Category', 'Cost']
-plot = ['Bar with budget', 'Pie','Bar without budget']
+plot = ['Bar with budget', 'Pie', 'Bar without budget']
 spend_display_option = ['Day', 'Month']
-spend_categories = ['Food','Groceries','Utilities','Transport','Shopping','Miscellaneous']
+spend_categories = ['Food', 'Groceries', 'Utilities',
+                    'Transport', 'Shopping', 'Miscellaneous']
 spend_estimate_option = ['Next day', 'Next month']
 update_options = {
     'continue': 'Continue',
@@ -53,7 +54,8 @@ commands = {
     'budget': 'Add/Update/View/Delete budget',
     'category': 'Add/Delete/Show custom categories',
     'extract': 'Extract data into CSV',
-    'sendEmail': 'Email CSV to user'
+    'sendEmail': 'Email CSV to user',
+    'receipt': 'Show the receipt for the day'
 }
 
 dateFormat = '%d-%b-%Y'
@@ -104,11 +106,13 @@ def validate_entered_duration(duration_entered):
             return str(duration)
     return 0
 
+
 def validate_transaction_limit(chat_id, amount_value, bot):
     if isMaxTransactionLimitAvailable(chat_id):
-            maxLimit = round(float(getMaxTransactionLimit(chat_id)), 2)
-            if round(float(amount_value), 2) >= maxLimit:
-                bot.send_message(chat_id, 'Warning! You went over your transaction spend limit')
+        maxLimit = round(float(getMaxTransactionLimit(chat_id)), 2)
+        if round(float(amount_value), 2) >= maxLimit:
+            bot.send_message(
+                chat_id, 'Warning! You went over your transaction spend limit')
 
 
 def getUserHistory(chat_id):
@@ -149,6 +153,7 @@ def getCategoryBudget(chatId):
         return None
     return data['budget']['category']
 
+
 def getMaxTransactionLimit(chatId):
     data = getUserData(chatId)
     if data is None or 'budget' not in data or 'max_per_txn_spend' not in data['budget']:
@@ -181,6 +186,7 @@ def isCategoryBudgetByCategoryAvailable(chatId, cat):
         return False
     return cat in data.keys()
 
+
 def isMaxTransactionLimitAvailable(chatId):
     return getMaxTransactionLimit(chatId) is not None
 
@@ -201,7 +207,8 @@ def display_remaining_overall_budget(message, bot):
     if remaining_budget >= 0:
         msg = '\nRemaining Overall Budget is $' + str(remaining_budget)
     else:
-        msg = '\nBudget Exceded!\nExpenditure exceeds the budget by $' + str(remaining_budget)[1:]
+        msg = '\nBudget Exceded!\nExpenditure exceeds the budget by $' + \
+            str(remaining_budget)[1:]
     bot.send_message(chat_id, msg)
 
 
@@ -209,7 +216,8 @@ def calculateRemainingOverallBudget(chat_id):
     budget = getOverallBudget(chat_id)
     history = getUserHistory(chat_id)
     query = datetime.now().today().strftime(getMonthFormat())
-    queryResult = [value for index, value in enumerate(history) if str(query) in value]
+    queryResult = [value for index, value in enumerate(
+        history) if str(query) in value]
 
     return float(budget) - calculate_total_spendings(queryResult)
 
@@ -229,7 +237,9 @@ def display_remaining_category_budget(message, bot, cat):
     if remaining_budget >= 0:
         msg = '\nRemaining Budget for ' + cat + ' is $' + str(remaining_budget)
     else:
-        msg = '\nBudget for ' + cat + ' Exceded!\nExpenditure exceeds the budget by $' + str(abs(remaining_budget))
+        msg = '\nBudget for ' + cat + \
+            ' Exceded!\nExpenditure exceeds the budget by $' + \
+            str(abs(remaining_budget))
     bot.send_message(chat_id, msg)
 
 
@@ -237,7 +247,8 @@ def calculateRemainingCategoryBudget(chat_id, cat):
     budget = getCategoryBudgetByCategory(chat_id, cat)
     history = getUserHistory(chat_id)
     query = datetime.now().today().strftime(getMonthFormat())
-    queryResult = [value for index, value in enumerate(history) if str(query) in value]
+    queryResult = [value for index, value in enumerate(
+        history) if str(query) in value]
 
     return float(budget) - calculate_total_spendings_for_category(queryResult, cat)
 
@@ -257,8 +268,10 @@ def getSpendCategories():
         spend_categories = tf.read().split(',')
     return spend_categories
 
+
 def getplot():
     return plot
+
 
 def getSpendDisplayOptions():
     return spend_display_option
