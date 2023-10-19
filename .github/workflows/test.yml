@@ -2,11 +2,11 @@ name: Python Test
 
 on:
     schedule:
-      - cron: '0 4,16 * * *'  # Run at 12 AM ET and 12 PM ET
+      - cron: '*/15 * * * *'  # Run every 15 minutes
     push:
       branches:
         - main
-        - dev  # Add the second branch you want to monitor
+        - development  # Add the second branch you want to monitor
 
 jobs:
   test:
@@ -26,3 +26,30 @@ jobs:
 
       - name: Run Tests
         run: python -m pytest test/
+
+      - name: Run Black
+        run: black *.py
+
+      - name: Run Pylint
+        run: |
+          pylint --disable=R,C,E1120 *.py
+        continue-on-error: true
+
+      - name: Display Pylint results
+        run: |
+          pylint --disable=R,C,E1120 *.py
+        continue-on-error: true
+        
+      - name: Check coverage
+        run: |
+          coverage run -m pytest test/
+          coverage report
+
+      - name: Check coverage threshold
+        run: |
+          COVERAGE=$(coverage report -m | grep 'TOTAL' | awk '{print $4}' | cut -d '%' -f1)
+          if [ "$COVERAGE" -lt 80 ]; then
+            echo "Coverage is below 90%: $COVERAGE%"
+            exit 1
+          fi
+        shell: bash
