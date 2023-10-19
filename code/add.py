@@ -96,6 +96,8 @@ def post_amount_input(message, bot, selected_category):
         if amount_value == 0:  # cannot be $0 spending
             raise Exception("Spent amount has to be a non-zero number.")
 
+        helper.validate_transaction_limit(chat_id, amount_value, bot)
+
         date_of_entry = datetime.today().strftime(
             helper.getDateFormat() + ' ' + helper.getTimeFormat())
         date_str, category_str, amount_str = str(
