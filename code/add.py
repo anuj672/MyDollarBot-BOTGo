@@ -42,11 +42,13 @@ def handle_uploaded_receipt(message, bot):
         file_id = message.photo[-1].file_id
         file_info = bot.get_file(file_id)
         file_url = 'https://api.telegram.org/file/bot{}/{}'.format(
-            "bot", file_info.file_path)
+            api_token, file_info.file_path)
 
         # store image
+        file_extension = file_info.file_path.split('.')[-1]
+
         receipt_file_name = os.path.join(
-            "receipts", f"receipt_{chat_id}_{datetime.now().strftime('%Y%m%d%H%M%S')}.jpg")
+            "receipts", f"receipt_{chat_id}_{datetime.now().strftime('%Y%m%d%H%M%S')}.{file_extension}")
 
         with open(receipt_file_name, 'wb') as file:
             file.write(requests.get(file_url).content)
