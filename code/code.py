@@ -15,6 +15,7 @@ import category
 import extract
 import sendEmail
 import add_recurring
+import receipt
 from datetime import datetime
 from jproperties import Properties
 
@@ -123,8 +124,8 @@ def command_sendEmail(message):
 
 
 @bot.message_handler(commands=['receipt'])
-def receipt(message):
-    receipt.run(message, bot)
+def command_receipt(message):
+    receipt.command_receipt(message, bot)
 
 
 # not used
